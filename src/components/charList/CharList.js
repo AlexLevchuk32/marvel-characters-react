@@ -1,9 +1,8 @@
-import { Component, useCallback } from 'react';
+import { Component } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import MarvelService from '../../services/MarvelService';
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 
 class CharactersList extends Component {
 	state = {
@@ -40,7 +39,11 @@ class CharactersList extends Component {
 			}
 
 			return (
-				<li className="char__item" key={item.id}>
+				<li
+					key={item.id}
+					className="char__item"
+					onClick={() => this.props.onCharacterSelected(item.id)}
+				>
 					<img src={item.thumbnail} alt={item.name} style={imgStyle} />
 					<div className="char__name">{item.name}</div>
 				</li>
@@ -55,7 +58,7 @@ class CharactersList extends Component {
 
 		const items = this.renderItems(charactersList);
 
-		const errorMessage = error ? <errorMessage /> : null;
+		const errorMessage = error ? <ErrorMessage /> : null;
 		const spinner = loading ? <Spinner /> : null;
 		const content = !(loading || error) ? items : null;
 
