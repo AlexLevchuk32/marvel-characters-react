@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PropTypes from 'react';
+
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import MarvelService from '../../services/MarvelService';
@@ -54,8 +56,20 @@ class CharactersList extends Component {
 		this.setState({ error: true, loading: false });
 	};
 
+	itemsRefs = [];
+
+	setRef = (ref) => {
+		this.itemsRefs.push(ref);
+	};
+
+	focusOnItem = (id) => {
+		this.itemsRefs.forEach((item) => item.classList.remove('char__item_selected'));
+		this.itemsRefs[id].classList.add('char__item_selected');
+		this.itemsRefs[id].focus();
+	};
+
 	renderItems(arr) {
-		const items = arr.map((item) => {
+		const items = arr.map((item, i) => {
 			let imgStyle = { objectFit: 'cover' };
 			if (
 				item.thumbnail ===
@@ -66,9 +80,14 @@ class CharactersList extends Component {
 
 			return (
 				<li
-					key={item.id}
 					className="char__item"
-					onClick={() => this.props.onCharacterSelected(item.id)}
+					tabIndex={0}
+					ref={this.setRef}
+					key={item.id}
+					onClick={() => {
+						this.props.onCharacterSelected(item.id);
+						this.focusOnItem(i);
+					}}
 				>
 					<img src={item.thumbnail} alt={item.name} style={imgStyle} />
 					<div className="char__name">{item.name}</div>
